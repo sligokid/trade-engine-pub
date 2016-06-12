@@ -25,9 +25,9 @@ public abstract class AbstractHttpServlet extends HttpServlet {
 		response.setHeader("Connection", "keep-alive");
 		response.addHeader("Access-Control-Allow-Origin", "*");
 
-		runPrintWriter(request, response);
+		publish(request, response);
 	}
 
-	protected abstract void runPrintWriter(HttpServletRequest request, HttpServletResponse response) throws IOException;
+	protected abstract void publish(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 }

@@ -2,44 +2,53 @@ package com.magoo.currencyfair.pub.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+
+import com.magoo.currencyfair.pub.model.Trade;
+import com.magoo.currencyfair.pub.service.TradeService;
 
 @Configuration
 @WebServlet("/tradestream")
 public class TradeServlet extends AbstractHttpServlet {
 
+	private static final int PUBLISH_INTERVAL = 2000;
+
 	private static final long serialVersionUID = 1L;
 
-	private static AtomicLong id = new AtomicLong();
+	@Autowired
+	private TradeService tradeService;
 
 	@Override
-	protected void runPrintWriter(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void publish(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		PrintWriter printWriter = response.getWriter();
 
 		while (true) {
 
-			double lat = Math.random() * 180;
-			double lng = Math.random() * 180;
+			Trade newTrade = tradeService.getTrade();
 
 			printWriter.print("data:" + "{\n");
-			printWriter.print("data:\"id\": \"" + id.getAndIncrement() + "\",\n");
-			printWriter.print("data:\"lat\": " + lat + ",\n");
-			printWriter.print("data:\"lng\": " + lng + "\n");
+			printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
+			printWriter.print("data:\"lat\": " + newTrade.getLat() + ",\n");
+			printWriter.print("data:\"lng\": " + newTrade.getLng() + "\n");
 			printWriter.print("data:" + "}\n\n");
 			printWriter.flush();
 
-			try {
-				Thread.currentThread();
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep();
+		}
+	}
+
+	private void sleep() {
+		try {
+			Thread.currentThread();
+			Thread.sleep(PUBLISH_INTERVAL);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
