@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @WebServlet("/tradestream")
-public class TradeServlet extends BaseHttpServlet {
+public class TradeServlet extends AbstractHttpServlet {
 
 	private static final long serialVersionUID = 1L;
 

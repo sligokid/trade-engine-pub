@@ -1,4 +1,4 @@
-package com.magoo.currencyfair.pub;
+package com.magoo.currencyfair.pub.work;
 
 import java.util.concurrent.atomic.AtomicLong;
 

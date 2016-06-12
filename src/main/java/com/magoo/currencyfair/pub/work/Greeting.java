@@ -1,4 +1,4 @@
-package com.magoo.currencyfair.pub;
+package com.magoo.currencyfair.pub.work;
 
 public class Greeting {
 

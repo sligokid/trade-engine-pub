@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class BaseHttpServlet extends HttpServlet {
+public abstract class AbstractHttpServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
