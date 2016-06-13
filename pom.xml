@@ -50,8 +50,24 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- IT -->
+			<plugin>
+ 				 <artifactId>maven-failsafe-plugin</artifactId>
+  				<executions>
+    				<execution>
+      				<id>integration-test</id>
+      				<goals>
+        				<goal>integration-test</goal>
+      				</goals>
+      				<configuration>
+        				<includes>
+          					<include>**/*IT.class</include>
+       					</includes>
+      				</configuration>
+    			</execution>
+ 			 </executions>
+			</plugin>
 		</plugins>
 	</build>
-	
 
 </project>

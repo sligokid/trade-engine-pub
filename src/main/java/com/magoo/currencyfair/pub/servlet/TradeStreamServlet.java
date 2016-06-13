@@ -15,9 +15,7 @@ import com.magoo.currencyfair.pub.service.TradeService;
 
 @Configuration
 @WebServlet("/tradestream")
-public class TradeServlet extends AbstractHttpServlet {
-
-	private static final int PUBLISH_INTERVAL = 2000;
+public class TradeStreamServlet extends AbstractStreamServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,8 +26,9 @@ public class TradeServlet extends AbstractHttpServlet {
 	protected void publish(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		PrintWriter printWriter = response.getWriter();
 
-		while (true) {
+		boolean live = !isIntegrationTestPort();
 
+		while (live) {
 			Trade newTrade = tradeService.getTrade();
 
 			printWriter.print("data:" + "{\n");
@@ -40,15 +39,6 @@ public class TradeServlet extends AbstractHttpServlet {
 			printWriter.flush();
 
 			sleep();
-		}
-	}
-
-	private void sleep() {
-		try {
-			Thread.currentThread();
-			Thread.sleep(PUBLISH_INTERVAL);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 

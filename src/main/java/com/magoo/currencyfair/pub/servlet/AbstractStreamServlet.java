@@ -7,9 +7,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class AbstractHttpServlet extends HttpServlet {
+import org.springframework.beans.factory.annotation.Value;
+
+public abstract class AbstractStreamServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final int PUBLISH_INTERVAL = 2000;
+
+	@Value("${server.port}")
+	private int port;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -29,5 +36,18 @@ public abstract class AbstractHttpServlet extends HttpServlet {
 	}
 
 	protected abstract void publish(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+	protected boolean isIntegrationTestPort() {
+		return port == 0;
+	}
+
+	protected void sleep() {
+		try {
+			Thread.currentThread();
+			Thread.sleep(PUBLISH_INTERVAL);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
