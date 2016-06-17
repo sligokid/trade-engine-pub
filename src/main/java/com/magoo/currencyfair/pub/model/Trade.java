@@ -1,7 +1,6 @@
 package com.magoo.currencyfair.pub.model;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class Trade {
 
@@ -19,7 +18,7 @@ public class Trade {
 
 	private BigDecimal rate;
 
-	private Date timePlaced;
+	// private Date timePlaced;
 
 	private String originatingCountry;
 
@@ -87,13 +86,13 @@ public class Trade {
 		this.rate = rate;
 	}
 
-	public Date getTimePlaced() {
-		return timePlaced;
-	}
+	// public Date getTimePlaced() {
+	// return timePlaced;
+	// }
 
-	public void setTimePlaced(Date timePlaced) {
-		this.timePlaced = timePlaced;
-	}
+	// public void setTimePlaced(Date timePlaced) {
+	// this.timePlaced = timePlaced;
+	// }
 
 	public String getOriginatingCountry() {
 		return originatingCountry;

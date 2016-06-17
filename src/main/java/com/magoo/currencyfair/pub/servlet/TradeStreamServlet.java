@@ -30,13 +30,14 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 
 		while (live) {
 			Trade newTrade = tradeService.getTrade();
-
-			printWriter.print("data:" + "{\n");
-			printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
-			printWriter.print("data:\"lat\": " + newTrade.getLat() + ",\n");
-			printWriter.print("data:\"lng\": " + newTrade.getLng() + "\n");
-			printWriter.print("data:" + "}\n\n");
-			printWriter.flush();
+			if (newTrade != null) {
+				printWriter.print("data:" + "{\n");
+				printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
+				printWriter.print("data:\"lat\": " + newTrade.getLat() + ",\n");
+				printWriter.print("data:\"lng\": " + newTrade.getLng() + "\n");
+				printWriter.print("data:" + "}\n\n");
+				printWriter.flush();
+			}
 
 			sleep();
 		}
