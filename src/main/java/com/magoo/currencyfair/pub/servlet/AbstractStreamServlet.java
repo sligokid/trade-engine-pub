@@ -13,7 +13,7 @@ public abstract class AbstractStreamServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int PUBLISH_INTERVAL = 2000;
+	private static final int PUBLISH_INTERVAL = 200;
 
 	@Value("${server.port}")
 	private int port;

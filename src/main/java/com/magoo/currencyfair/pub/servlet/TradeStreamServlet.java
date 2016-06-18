@@ -33,8 +33,16 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 			if (newTrade != null) {
 				printWriter.print("data:" + "{\n");
 				printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
+				printWriter.print("data:\"userId\": \"" + newTrade.getUserId() + "\",\n");
 				printWriter.print("data:\"lat\": " + newTrade.getLat() + ",\n");
-				printWriter.print("data:\"lng\": " + newTrade.getLng() + "\n");
+				printWriter.print("data:\"lng\": " + newTrade.getLng() + ",\n");
+				printWriter.print("data:\"currencyFrom\": \"" + newTrade.getCurrencyFrom() + "\",\n");
+				printWriter.print("data:\"currencyTo\": \"" + newTrade.getCurrencyTo() + "\",\n");
+				printWriter.print("data:\"amountBuy\": \"" + newTrade.getAmountBuy() + "\",\n");
+				printWriter.print("data:\"amountSell\": \"" + newTrade.getAmountSell() + "\",\n");
+				printWriter.print("data:\"rate\": \"" + newTrade.getRate() + "\",\n");
+
+				printWriter.print("data:\"originatingCountry\": \"" + newTrade.getOriginatingCountry() + "\"\n");
 				printWriter.print("data:" + "}\n\n");
 				printWriter.flush();
 			}
