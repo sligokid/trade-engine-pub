@@ -1,10 +1,13 @@
 package com.magoo.currencyfair.pub.service;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.magoo.currencyfair.pub.model.CurrencyPair;
 import com.magoo.currencyfair.pub.model.IsoGeoLocation;
 import com.magoo.currencyfair.pub.model.Trade;
 
@@ -13,15 +16,36 @@ public class TradeService {
 
 	private static AtomicLong id = new AtomicLong();
 
+	private Map<CurrencyPair, Long> pairVolume = new ConcurrentHashMap<>();
+
 	public Trade getTrade() {
 		RestTemplate restTemplate = new RestTemplate();
 		Trade trade = restTemplate.getForObject("http://localhost:8282/rft", Trade.class);
 
 		if (trade != null) {
 			enrichTrade(trade);
+			recordVolume(trade);
 		}
 
+		pairVolume.forEach((k, v) -> System.out.println("key: " + k + " value:" + v));
+
 		return trade;
+	}
+
+	private void recordVolume(Trade trade) {
+		CurrencyPair pair = CurrencyPair.getPair(trade.getCurrencyFrom(), trade.getCurrencyTo());
+		if (pair != null) {
+			initOrUpdateVolume(pair);
+		}
+	}
+
+	private synchronized void initOrUpdateVolume(CurrencyPair pair) {
+		Long value = pairVolume.get(pair);
+		if (value == null) {
+			pairVolume.put(pair, new Long(1));
+			return;
+		}
+		pairVolume.put(pair, new Long(++value));
 	}
 
 	private void enrichTrade(Trade trade) {
@@ -30,6 +54,10 @@ public class TradeService {
 		trade.setId(id.getAndIncrement());
 		trade.setLat(location.getLatitude());
 		trade.setLng(location.getLongtitude());
+	}
+
+	public Map<CurrencyPair, Long> getPairVolume() {
+		return pairVolume;
 	}
 
 }
