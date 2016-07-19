@@ -16,8 +16,10 @@ import com.magoo.currencyfair.pub.model.Trade;
 import com.magoo.currencyfair.pub.service.TradeService;
 
 @Configuration
-@WebServlet("/tradestream")
+@WebServlet(TradeStreamServlet.TRADESTREAM_URI)
 public class TradeStreamServlet extends AbstractStreamServlet {
+
+	static final String TRADESTREAM_URI = "/pub/tradestream";
 
 	private static final long serialVersionUID = 1L;
 
@@ -61,6 +63,15 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 			}
 
 			sleep();
+		}
+	}
+
+	protected void sleep() {
+		try {
+			Thread.currentThread();
+			Thread.sleep(PUBLISH_INTERVAL);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

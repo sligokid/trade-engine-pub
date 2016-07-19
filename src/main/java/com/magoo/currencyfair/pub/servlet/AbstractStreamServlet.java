@@ -13,7 +13,7 @@ public abstract class AbstractStreamServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int PUBLISH_INTERVAL = 200;
+	protected static final int PUBLISH_INTERVAL = 200;
 
 	@Value("${server.port}")
 	private int port;
@@ -39,15 +39,6 @@ public abstract class AbstractStreamServlet extends HttpServlet {
 
 	protected boolean isIntegrationTestPort() {
 		return port == 0;
-	}
-
-	protected void sleep() {
-		try {
-			Thread.currentThread();
-			Thread.sleep(PUBLISH_INTERVAL);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

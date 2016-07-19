@@ -36,7 +36,7 @@ public class TradeStreamServletIT {
 
 	@Test
 	public void tradestream_endpoint_pusblishes_stream() throws Exception {
-		URL url = new URL("http://localhost:" + port + "/tradestream");
+		URL url = new URL("http://localhost:" + port + TradeStreamServlet.TRADESTREAM_URI);
 
 		ResponseEntity<String> response = template.getForEntity(url.toString(), String.class);
 

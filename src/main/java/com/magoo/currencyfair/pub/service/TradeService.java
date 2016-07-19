@@ -14,20 +14,20 @@ import com.magoo.currencyfair.pub.model.Trade;
 @Service
 public class TradeService {
 
+	private static final String API_RFT_URL = "http://localhost:8282/api/rft";
+
 	private static AtomicLong id = new AtomicLong();
 
 	private Map<CurrencyPair, Long> pairVolume = new ConcurrentHashMap<>();
 
 	public Trade getTrade() {
 		RestTemplate restTemplate = new RestTemplate();
-		Trade trade = restTemplate.getForObject("http://localhost:8282/rft", Trade.class);
+		Trade trade = restTemplate.getForObject(API_RFT_URL, Trade.class);
 
 		if (trade != null) {
 			enrichTrade(trade);
 			recordVolume(trade);
 		}
-
-		pairVolume.forEach((k, v) -> System.out.println("key: " + k + " value:" + v));
 
 		return trade;
 	}
