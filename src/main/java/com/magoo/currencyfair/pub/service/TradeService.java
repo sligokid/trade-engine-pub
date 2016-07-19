@@ -14,7 +14,7 @@ import com.magoo.currencyfair.pub.model.Trade;
 @Service
 public class TradeService {
 
-	private static final String API_RFT_URL = "http://localhost:8282/api/rft";
+	private static final String API_RFT_URL = "http://localhost:8102/api/rft";
 
 	private static AtomicLong id = new AtomicLong();
 
