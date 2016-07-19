@@ -52,7 +52,13 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 				printWriter.print("data:\"originatingCountry\": \"" + newTrade.getOriginatingCountry() + "\",\n");
 
 				// printWriter.print("data:\"volume\": \"" + volume + "\"\n");
-				printWriter.print("data:\"volume\": \"" + volume + "\"\n");
+
+				for (Map.Entry<CurrencyPair, Long> entry : volume.entrySet()) {
+					printWriter.print("data:\"" + entry.getKey() + "\": \"" + entry.getValue() + "\",\n");
+				}
+
+				// printWriter.print("data:\"volume\": \"\n");
+				printWriter.print("data:\"volume\": \"\"\n");
 
 				// printWriter.println("data:\"volume\": \"" + "{" +
 				// volume.toString() + "}" + "\"\\n");
