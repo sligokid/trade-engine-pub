@@ -82,6 +82,13 @@ public enum CurrencyPair {
 	USD_TRY,
 	USD_ZAR;
 
+	/**
+	 * Gets the pair in the correct direct / indirect form.
+	 *
+	 * @param base the base
+	 * @param foreign the foreign
+	 * @return the pair
+	 */
 	public static CurrencyPair getPair(String base, String foreign) {
 		String directPair = base + "_" + foreign;
 		String IndirectPair = foreign + "_" + base;

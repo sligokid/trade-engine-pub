@@ -6,7 +6,7 @@ public class Trade {
 
 	private long id;
 
-	private long userId;
+	private String userId;
 
 	private String currencyFrom;
 
@@ -38,11 +38,11 @@ public class Trade {
 		this.id = id;
 	}
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

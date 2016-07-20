@@ -24,6 +24,8 @@ public class TradeService {
 		RestTemplate restTemplate = new RestTemplate();
 		Trade trade = restTemplate.getForObject(API_RFT_URL, Trade.class);
 
+		// TradeDao tradeDao = new TradeDao.TradeDaoBuilder(trade).build();
+
 		if (trade != null) {
 			enrichTrade(trade);
 			recordVolume(trade);

@@ -74,7 +74,6 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 
 	protected void sleep() {
 		try {
-			Thread.currentThread();
 			Thread.sleep(PUBLISH_INTERVAL);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
