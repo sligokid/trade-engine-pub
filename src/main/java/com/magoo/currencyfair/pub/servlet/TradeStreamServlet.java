@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import com.magoo.currencyfair.pub.model.CurrencyPair;
-import com.magoo.currencyfair.pub.model.Trade;
+import com.magoo.currencyfair.pub.model.TradeDao;
 import com.magoo.currencyfair.pub.service.TradeService;
 
 @Configuration
@@ -33,16 +33,16 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 		boolean live = !isIntegrationTestPort();
 
 		while (live) {
-			Trade newTrade = tradeService.getTrade();
-
-			Map<CurrencyPair, Long> volume = tradeService.getPairVolume();
+			TradeDao newTrade = tradeService.getTrade();
 
 			if (newTrade != null) {
+				Map<CurrencyPair, Long> volume = tradeService.getPairVolume();
+
 				printWriter.print("data:" + "{\n");
 				printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
 				printWriter.print("data:\"userId\": \"" + newTrade.getUserId() + "\",\n");
-				printWriter.print("data:\"lat\": " + newTrade.getLat() + ",\n");
-				printWriter.print("data:\"lng\": " + newTrade.getLng() + ",\n");
+				printWriter.print("data:\"lat\": " + newTrade.getLatitude() + ",\n");
+				printWriter.print("data:\"lng\": " + newTrade.getLongtitude() + ",\n");
 				printWriter.print("data:\"currencyFrom\": \"" + newTrade.getCurrencyFrom() + "\",\n");
 				printWriter.print("data:\"currencyTo\": \"" + newTrade.getCurrencyTo() + "\",\n");
 				printWriter.print("data:\"amountBuy\": \"" + newTrade.getAmountBuy() + "\",\n");
@@ -66,9 +66,9 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 
 				printWriter.print("data:" + "}\n\n");
 				printWriter.flush();
+				sleep();
 			}
 
-			sleep();
 		}
 	}
 

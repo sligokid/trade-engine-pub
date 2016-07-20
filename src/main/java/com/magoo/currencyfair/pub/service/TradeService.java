@@ -2,43 +2,40 @@ package com.magoo.currencyfair.pub.service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.magoo.currencyfair.pub.model.CurrencyPair;
-import com.magoo.currencyfair.pub.model.IsoGeoLocation;
 import com.magoo.currencyfair.pub.model.Trade;
+import com.magoo.currencyfair.pub.model.TradeDao;
 
 @Service
 public class TradeService {
 
-	private static final String API_RFT_URL = "http://localhost:8102/api/rft";
+	private static final Logger LOG = LoggerFactory.getLogger(TradeService.class);
 
-	private static AtomicLong id = new AtomicLong();
+	private static final String API_RFT_URL = "http://localhost:8102/api/rft";
 
 	private Map<CurrencyPair, Long> pairVolume = new ConcurrentHashMap<>();
 
-	public Trade getTrade() {
+	public TradeDao getTrade() {
 		RestTemplate restTemplate = new RestTemplate();
 		Trade trade = restTemplate.getForObject(API_RFT_URL, Trade.class);
-
-		// TradeDao tradeDao = new TradeDao.TradeDaoBuilder(trade).build();
-
-		if (trade != null) {
-			enrichTrade(trade);
-			recordVolume(trade);
+		TradeDao tradeDao = null;
+		try {
+			tradeDao = new TradeDao.TradeDaoBuilder(trade).build();
+			initOrUpdateVolume(tradeDao.getCurrencyPair());
+			LOG.info("Streaming tradeDao: {}", tradeDao);
+		} catch (IllegalStateException e) {
+			// LOG.warn(e.toString());
+		} catch (IllegalArgumentException e) {
+			LOG.error(e.toString());
 		}
 
-		return trade;
-	}
-
-	private void recordVolume(Trade trade) {
-		CurrencyPair pair = CurrencyPair.getPair(trade.getCurrencyFrom(), trade.getCurrencyTo());
-		if (pair != null) {
-			initOrUpdateVolume(pair);
-		}
+		return tradeDao;
 	}
 
 	private synchronized void initOrUpdateVolume(CurrencyPair pair) {
@@ -48,14 +45,6 @@ public class TradeService {
 			return;
 		}
 		pairVolume.put(pair, new Long(++value));
-	}
-
-	private void enrichTrade(Trade trade) {
-		// FIXME builder
-		IsoGeoLocation location = IsoGeoLocation.valueOf(trade.getOriginatingCountry());
-		trade.setId(id.getAndIncrement());
-		trade.setLat(location.getLatitude());
-		trade.setLng(location.getLongtitude());
 	}
 
 	public Map<CurrencyPair, Long> getPairVolume() {
