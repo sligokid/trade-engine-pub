@@ -12,6 +12,10 @@ import com.magoo.currencyfair.pub.model.CurrencyPair;
 import com.magoo.currencyfair.pub.model.Trade;
 import com.magoo.currencyfair.pub.model.TradeDao;
 
+/**
+ * The Class TradeService providing trade sourcing via REST endpoint and
+ * validation.
+ */
 @Service
 public class TradeService {
 

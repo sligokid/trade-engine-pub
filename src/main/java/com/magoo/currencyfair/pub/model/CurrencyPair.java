@@ -1,5 +1,10 @@
 package com.magoo.currencyfair.pub.model;
 
+/**
+ * The Enum CurrencyPair.
+ * 
+ * Finite set of the most active (Supported) Currency pairs.
+ */
 public enum CurrencyPair {
 	//@formatter:off
 	AUD_CAD,

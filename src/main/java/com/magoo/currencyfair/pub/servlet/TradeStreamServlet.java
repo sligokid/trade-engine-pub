@@ -15,6 +15,10 @@ import com.magoo.currencyfair.pub.model.CurrencyPair;
 import com.magoo.currencyfair.pub.model.TradeDao;
 import com.magoo.currencyfair.pub.service.TradeService;
 
+/**
+ * The Class TradeStreamServlet providing a Streaming API Server Sent Events
+ * implementation.
+ */
 @Configuration
 @WebServlet(TradeStreamServlet.TRADESTREAM_URI)
 public class TradeStreamServlet extends AbstractStreamServlet {
@@ -51,19 +55,11 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 
 				printWriter.print("data:\"originatingCountry\": \"" + newTrade.getOriginatingCountry() + "\",\n");
 
-				// printWriter.print("data:\"volume\": \"" + volume + "\"\n");
-
 				for (Map.Entry<CurrencyPair, Long> entry : volume.entrySet()) {
 					printWriter.print("data:\"" + entry.getKey() + "\": \"" + entry.getValue() + "\",\n");
 				}
 
-				// printWriter.print("data:\"volume\": \"\n");
-				printWriter.print("data:\"volume\": \"\"\n");
-
-				// printWriter.println("data:\"volume\": \"" + "{" +
-				// volume.toString() + "}" + "\"\\n");
-				// + "\",\n");
-
+				printWriter.print("data:\"\": \"\"\n");
 				printWriter.print("data:" + "}\n\n");
 				printWriter.flush();
 				sleep();

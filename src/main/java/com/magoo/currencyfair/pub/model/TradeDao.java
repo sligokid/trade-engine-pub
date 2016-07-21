@@ -3,6 +3,12 @@ package com.magoo.currencyfair.pub.model;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * The Class TradeDao.
+ * 
+ * Sanitize the Trade entity before validating, enriching and building the DAO
+ * representation of the Trade.
+ */
 public class TradeDao {
 
 	private static AtomicLong idGenerator = new AtomicLong();
@@ -258,6 +264,7 @@ public class TradeDao {
 		return latitude;
 	}
 
+	// TODO hashcode & equals J7 Object API
 	@Override
 	public String toString() {
 		return "TradeDao [id=" + id + ", userId=" + userId + ", currencyFrom=" + currencyFrom + ", currencyTo="
