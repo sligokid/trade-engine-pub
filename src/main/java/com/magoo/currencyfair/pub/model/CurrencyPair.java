@@ -104,4 +104,14 @@ public enum CurrencyPair {
 		}
 		return null;
 	}
+
+	public static boolean isDirect(String base, String foreign) {
+		String directPair = base + "_" + foreign;
+		for (CurrencyPair pair : values()) {
+			if (pair.name().equals(directPair)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

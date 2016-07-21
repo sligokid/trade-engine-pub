@@ -1,5 +1,8 @@
 package com.magoo.currencyfair.pub.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +31,10 @@ public class TradeService {
 
 	private Map<MarketVolumeIndicator, Long> marketVolume = new ConcurrentHashMap<>();
 
+	private Map<CurrencyPair, List<BigDecimal>> buyers = new ConcurrentHashMap<>();
+
+	private Map<CurrencyPair, List<BigDecimal>> sellers = new ConcurrentHashMap<>();
+
 	/**
 	 * Gets the enriched trade dao.
 	 *
@@ -45,6 +52,8 @@ public class TradeService {
 			tradeDao = new TradeDao.TradeDaoBuilder(trade).build();
 			initOrUpdatePairVolume(tradeDao.getCurrencyPair());
 			initOrUpdateMarketVolume(MarketVolumeIndicator.LIVE);
+			initOrUpdateBuyersAndSellers(tradeDao);
+			matchTrade(tradeDao);
 			LOG.info("Streaming tradeDao: {}", tradeDao);
 		} catch (IllegalStateException e) {
 			// LOG.warn(e.toString());
@@ -72,6 +81,79 @@ public class TradeService {
 			return;
 		}
 		marketVolume.put(key, new Long(++value));
+	}
+
+	private synchronized void decrementMarketVolume(MarketVolumeIndicator key) {
+		Long value = marketVolume.get(key);
+		marketVolume.put(key, new Long(--value));
+	}
+
+	private synchronized void initOrUpdateBuyersAndSellers(TradeDao tradeDao) {
+		if (isSeller(tradeDao)) {
+			updateSellers(tradeDao);
+			return;
+		}
+		updateBuyers(tradeDao);
+	}
+
+	private boolean isSeller(TradeDao tradeDao) {
+		return CurrencyPair.isDirect(tradeDao.getCurrencyFrom(), tradeDao.getCurrencyTo());
+	}
+
+	private void updateSellers(TradeDao tradeDao) {
+		CurrencyPair currencyPair = tradeDao.getCurrencyPair();
+		List<BigDecimal> values = sellers.get(currencyPair);
+		BigDecimal rate = tradeDao.getRate();
+		if (values == null) {
+			List<BigDecimal> l = new ArrayList<BigDecimal>();
+			l.add(rate);
+			sellers.put(currencyPair, l);
+			return;
+		}
+		values.add(rate);
+	}
+
+	private void updateBuyers(TradeDao tradeDao) {
+		CurrencyPair currencyPair = tradeDao.getCurrencyPair();
+		List<BigDecimal> values = buyers.get(currencyPair);
+		BigDecimal rate = tradeDao.getRate();
+		if (values == null) {
+			List<BigDecimal> l = new ArrayList<BigDecimal>();
+			l.add(rate);
+			buyers.put(currencyPair, l);
+			return;
+		}
+		values.add(tradeDao.getRate());
+	}
+
+	private void matchTrade(TradeDao tradeDao) {
+		BigDecimal numerator = BigDecimal.ONE;
+		// BigDecimal inverseRate = numerator.divide(tradeDao.getRate(), 4,
+		// RoundingMode.HALF_EVEN);
+		if (isSeller(tradeDao)) {
+			// sell find buyer
+			List<BigDecimal> allAvailableSells = buyers.get(tradeDao.getCurrencyPair());
+			if (allAvailableSells != null) {
+				// for (BigDecimal rate : allAvailableSells) {
+				// if (rate.compareTo(inverseRate) == 0) {
+				initOrUpdateMarketVolume(MarketVolumeIndicator.MATCHED);
+				decrementMarketVolume(MarketVolumeIndicator.LIVE);
+				// }
+				// }
+			}
+		} else {
+			// buy find seller
+			List<BigDecimal> allAvailableBuys = sellers.get(tradeDao.getCurrencyPair());
+			if (allAvailableBuys != null) {
+				// for (BigDecimal rate : allAvailableBuys) {
+				// if (rate.compareTo(inverseRate) == 0) {
+				initOrUpdateMarketVolume(MarketVolumeIndicator.MATCHED);
+				decrementMarketVolume(MarketVolumeIndicator.LIVE);
+				// }
+				// }
+
+			}
+		}
 	}
 
 	public Map<CurrencyPair, Long> getPairVolume() {
