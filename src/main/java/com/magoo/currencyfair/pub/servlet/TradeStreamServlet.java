@@ -3,6 +3,7 @@ package com.magoo.currencyfair.pub.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import com.magoo.currencyfair.pub.model.CurrencyPair;
+import com.magoo.currencyfair.pub.model.MarketVolumeIndicator;
 import com.magoo.currencyfair.pub.model.TradeDao;
 import com.magoo.currencyfair.pub.service.TradeService;
 
@@ -40,7 +42,8 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 			TradeDao newTrade = tradeService.getTrade();
 
 			if (newTrade != null) {
-				Map<CurrencyPair, Long> volume = tradeService.getPairVolume();
+				Map<CurrencyPair, Long> pairVolume = tradeService.getPairVolume();
+				Map<MarketVolumeIndicator, Long> marketVolume = tradeService.getMarketVolume();
 
 				printWriter.print("data:" + "{\n");
 				printWriter.print("data:\"id\": \"" + newTrade.getId() + "\",\n");
@@ -55,7 +58,11 @@ public class TradeStreamServlet extends AbstractStreamServlet {
 
 				printWriter.print("data:\"originatingCountry\": \"" + newTrade.getOriginatingCountry() + "\",\n");
 
-				for (Map.Entry<CurrencyPair, Long> entry : volume.entrySet()) {
+				for (Map.Entry<CurrencyPair, Long> entry : pairVolume.entrySet()) {
+					printWriter.print("data:\"" + entry.getKey() + "\": \"" + entry.getValue() + "\",\n");
+				}
+
+				for (Entry<MarketVolumeIndicator, Long> entry : marketVolume.entrySet()) {
 					printWriter.print("data:\"" + entry.getKey() + "\": \"" + entry.getValue() + "\",\n");
 				}
 

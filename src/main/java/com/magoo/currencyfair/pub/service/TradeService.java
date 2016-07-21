@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.magoo.currencyfair.pub.model.CurrencyPair;
+import com.magoo.currencyfair.pub.model.MarketVolumeIndicator;
 import com.magoo.currencyfair.pub.model.Trade;
 import com.magoo.currencyfair.pub.model.TradeDao;
 
@@ -25,24 +26,37 @@ public class TradeService {
 
 	private Map<CurrencyPair, Long> pairVolume = new ConcurrentHashMap<>();
 
+	private Map<MarketVolumeIndicator, Long> marketVolume = new ConcurrentHashMap<>();
+
+	/**
+	 * Gets the enriched trade dao.
+	 *
+	 * @return the trade or null if no trade is currently available / validation
+	 *         fails
+	 */
 	public TradeDao getTrade() {
 		RestTemplate restTemplate = new RestTemplate();
 		Trade trade = restTemplate.getForObject(API_RFT_URL, Trade.class);
+		if (trade != null) {
+			initOrUpdateMarketVolume(MarketVolumeIndicator.PROCESSED);
+		}
 		TradeDao tradeDao = null;
 		try {
 			tradeDao = new TradeDao.TradeDaoBuilder(trade).build();
-			initOrUpdateVolume(tradeDao.getCurrencyPair());
+			initOrUpdatePairVolume(tradeDao.getCurrencyPair());
+			initOrUpdateMarketVolume(MarketVolumeIndicator.LIVE);
 			LOG.info("Streaming tradeDao: {}", tradeDao);
 		} catch (IllegalStateException e) {
 			// LOG.warn(e.toString());
 		} catch (IllegalArgumentException e) {
-			LOG.error(e.toString());
+			initOrUpdateMarketVolume(MarketVolumeIndicator.INVALID);
+			LOG.warn(e.toString());
 		}
 
 		return tradeDao;
 	}
 
-	private synchronized void initOrUpdateVolume(CurrencyPair pair) {
+	private synchronized void initOrUpdatePairVolume(CurrencyPair pair) {
 		Long value = pairVolume.get(pair);
 		if (value == null) {
 			pairVolume.put(pair, new Long(1));
@@ -51,8 +65,21 @@ public class TradeService {
 		pairVolume.put(pair, new Long(++value));
 	}
 
+	private synchronized void initOrUpdateMarketVolume(MarketVolumeIndicator key) {
+		Long value = marketVolume.get(key);
+		if (value == null) {
+			marketVolume.put(key, new Long(1));
+			return;
+		}
+		marketVolume.put(key, new Long(++value));
+	}
+
 	public Map<CurrencyPair, Long> getPairVolume() {
 		return pairVolume;
+	}
+
+	public Map<MarketVolumeIndicator, Long> getMarketVolume() {
+		return marketVolume;
 	}
 
 }
