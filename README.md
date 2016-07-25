@@ -5,11 +5,11 @@ Spring Boot microservice processing trades &amp; exposing Streaming Servlet endp
 
 - [Introduction](#introduction)
   - [Overview](#overview)
+  - [Architecture](#architecture)
   - [Verbs](#verbs)
   - [URI](#uri)
   - [Demo](#demo)
 
-![pub-diagram 1](https://cloud.githubusercontent.com/assets/6519496/17114623/a42dee4e-52a7-11e6-911d-d51e96fde710.png)
 
 ## Introduction
 
@@ -19,11 +19,15 @@ Trades submitted via the public API [https://github.com/sligokid/trade-engine-ap
 No Authentication is requred by the client to access to this service.
 This service is intended to be internal and function as a component in a microservice architecture
 
-### Overview
+## Overview
 
 This API uses the "Server Sent Events" (SSE) architectural style. 
 
-### Verbs
+## Architecture
+
+![pub-diagram 1](https://cloud.githubusercontent.com/assets/6519496/17114623/a42dee4e-52a7-11e6-911d-d51e96fde710.png)
+
+## Verbs
 
 *HTTP Methods* or *Verbs* are the actions which can be used on each endpoint. There is 1 verbs supported by this API:
 
@@ -34,7 +38,7 @@ This API uses the "Server Sent Events" (SSE) architectural style.
 A **GET** request returns the Event Stream representation of the next avaialable enriched trade.
 This resource is intended for internal consumption via the https://github.com/sligokid/trade-engine-web component
 
-### URI
+## URI
 
 The following table summarises all the available resource URIs, and the effect of each verb on them. Each of them is relative to the base URI for this API: `http://ec2-52-16-13-114.eu-west-1.compute.amazonaws.com:8102`.
 
