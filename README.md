@@ -43,4 +43,6 @@ The following table summarises all the available resource URIs, and the effect o
 
 ##Demo
 
+<img width="337" alt="preview-pub" src="https://cloud.githubusercontent.com/assets/6519496/17110830/bf0a187a-5296-11e6-8d23-a2aee0b55a66.png">
+
 http://ec2-52-16-13-114.eu-west-1.compute.amazonaws.com:8101/pub/tradestream
