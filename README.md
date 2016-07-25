@@ -9,6 +9,8 @@ Spring Boot microservice processing trades &amp; exposing Streaming Servlet endp
   - [URI](#uri)
   - [Demo](#demo)
 
+![pub-diagram 1](https://cloud.githubusercontent.com/assets/6519496/17114623/a42dee4e-52a7-11e6-911d-d51e96fde710.png)
+
 ## Introduction
 
 This Document outlines the web service provided to enable the processing of trades within the trade-engine.
