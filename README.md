@@ -1,4 +1,4 @@
-# trade-engine-pub
+# trade-engine-pub [![Build Status](https://travis-ci.org/sligokid/trade-engine-pub.svg?branch=develop)](https://travis-ci.org/sligokid/trade-engine-pub)
 Spring Boot microservice processing trades &amp; exposing Streaming Servlet endpoint (2016)
 
 ## Table of Contents
