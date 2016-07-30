@@ -6,91 +6,92 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
+import com.magoo.currencyfair.pub.NoTradeAvailableException;
+import com.magoo.currencyfair.pub.PublishTradeException;
+
 public class TradeDaoTest {
 
-	@Test(expected = IllegalStateException.class)
-	public void validate_null_trade_fails() {
+	@Test(expected = NoTradeAvailableException.class)
+	public void validate_null_trade_fails() throws PublishTradeException {
 		Trade trade = null;
 
 		new TradeDao.TradeDaoBuilder().validateTrade(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_curr_from_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_curr_from_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateCurrencyFrom(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_curr_to_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_curr_to_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateCurrencyTo(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_curr_pair_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_curr_pair_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateCurrencyPair(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_invalid_curr_pair_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_invalid_curr_pair_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateCurrencyPair(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_amt_sell_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_amt_sell_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateAmountSell(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_amt_buy_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_amt_buy_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateAmountBuy(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_amt_rate_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_amt_rate_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateRate(trade);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void validate_orig_country_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_orig_country_fails() throws PublishTradeException {
 		Trade trade = new Trade();
 
 		new TradeDao.TradeDaoBuilder().validateOriginatingCountry(trade);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void validate_longtitude_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_longtitude_no_entry_fails() throws PublishTradeException {
 		Trade trade = new Trade();
+		trade.setOriginatingCountry("AA");
 
 		new TradeDao.TradeDaoBuilder().validateLongtitude(trade);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void validate_latitude_fails() {
+	@Test(expected = PublishTradeException.class)
+	public void validate_latitude_fails() throws PublishTradeException {
 		Trade trade = new Trade();
+		trade.setOriginatingCountry("AA");
 
 		new TradeDao.TradeDaoBuilder().validateLatitude(trade);
 	}
 
-	// {"userId": "134256", "currencyFrom": "EUR", "currencyTo": "GBP",
-	// "amountSell": 1000, "amountBuy": 747.10, "rate": 0.7471, "timePlaced" :
-	// "24-JAN-15 10:27:44", "originatingCountry" : "FR"}
-
 	@Test
-	public void builder_returns_comple_dao() {
+	public void builder_returns_comple_dao() throws PublishTradeException {
 		Trade trade = createValidTrade();
 
 		TradeDao tradeDao = new TradeDao.TradeDaoBuilder(trade).build();

@@ -3,6 +3,9 @@ package com.magoo.currencyfair.pub.model;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.magoo.currencyfair.pub.NoTradeAvailableException;
+import com.magoo.currencyfair.pub.PublishTradeException;
+
 /**
  * The Class TradeDao.
  * 
@@ -71,7 +74,7 @@ public class TradeDao {
 
 		private Double latitude;
 
-		public TradeDaoBuilder(Trade trade) {
+		public TradeDaoBuilder(Trade trade) throws PublishTradeException {
 			validateTrade(trade);
 			this.userId = validateUserId(trade);
 			this.currencyFrom = validateCurrencyFrom(trade);
@@ -89,85 +92,92 @@ public class TradeDao {
 		TradeDaoBuilder() {
 		}
 
-		void validateTrade(Trade trade) {
+		void validateTrade(Trade trade) throws PublishTradeException {
 			if (trade == null) {
-				throw new IllegalStateException("no trade available");
+				throw new NoTradeAvailableException("no trade available");
 			}
 		}
 
-		String validateUserId(Trade trade) {
+		String validateUserId(Trade trade) throws PublishTradeException {
 			String val = trade.getUserId();
 			if (val == null) {
-				throw new IllegalArgumentException("userId cannot be null");
+				throw new PublishTradeException("userId cannot be null");
 			}
 			return val;
 		}
 
-		String validateCurrencyFrom(Trade trade) {
+		String validateCurrencyFrom(Trade trade) throws PublishTradeException {
 			String val = trade.getCurrencyFrom();
 			if (val == null) {
-				throw new IllegalArgumentException("currencyFrom cannot be null");
+				throw new PublishTradeException("currencyFrom cannot be null");
 			}
 			return val;
 		}
 
-		String validateCurrencyTo(Trade trade) {
+		String validateCurrencyTo(Trade trade) throws PublishTradeException {
 			String val = trade.getCurrencyTo();
 			if (val == null) {
-				throw new IllegalArgumentException("currencyFrom cannot be null");
+				throw new PublishTradeException("currencyFrom cannot be null");
 			}
 			return val;
 		}
 
-		CurrencyPair validateCurrencyPair(Trade trade) {
+		CurrencyPair validateCurrencyPair(Trade trade) throws PublishTradeException {
 			CurrencyPair val = CurrencyPair.getPair(trade.getCurrencyFrom(), trade.getCurrencyTo());
 			if (val == null) {
-				throw new IllegalArgumentException(
+				throw new PublishTradeException(
 						"currencyPair " + trade.getCurrencyFrom() + "_" + trade.getCurrencyTo() + " is not supported");
 			}
 			return val;
 		}
 
-		BigDecimal validateAmountSell(Trade trade) {
+		BigDecimal validateAmountSell(Trade trade) throws PublishTradeException {
 			BigDecimal val = trade.getAmountSell();
 			if (val == null) {
-				throw new IllegalArgumentException("amtountSell cannot be null");
+				throw new PublishTradeException("amtountSell cannot be null");
 			}
 			return val;
 		}
 
-		BigDecimal validateAmountBuy(Trade trade) {
+		BigDecimal validateAmountBuy(Trade trade) throws PublishTradeException {
 			BigDecimal val = trade.getAmountBuy();
 			if (val == null) {
-				throw new IllegalArgumentException("amountBuy cannot be null");
+				throw new PublishTradeException("amountBuy cannot be null");
 			}
 			return val;
 		}
 
-		BigDecimal validateRate(Trade trade) {
+		BigDecimal validateRate(Trade trade) throws PublishTradeException {
 			BigDecimal val = trade.getRate();
 			if (val == null) {
-				throw new IllegalArgumentException("rate cannot be null");
+				throw new PublishTradeException("rate cannot be null");
 			}
 			return val;
 		}
 
-		String validateOriginatingCountry(Trade trade) {
+		String validateOriginatingCountry(Trade trade) throws PublishTradeException {
 			String val = trade.getOriginatingCountry();
 			if (val == null) {
-				throw new IllegalArgumentException("originatingCountry cannot be null");
+				throw new PublishTradeException("originatingCountry cannot be null");
 			}
 			return val;
 		}
 
-		Double validateLongtitude(Trade trade) {
-			IsoGeoLocation location = IsoGeoLocation.valueOf(trade.getOriginatingCountry());
-			return location.getLongtitude();
+		Double validateLongtitude(Trade trade) throws PublishTradeException {
+			return getIsoGeoLocation(trade).getLongtitude();
 		}
 
-		Double validateLatitude(Trade trade) {
-			IsoGeoLocation location = IsoGeoLocation.valueOf(trade.getOriginatingCountry());
-			return location.getLatitude();
+		private IsoGeoLocation getIsoGeoLocation(Trade trade) throws PublishTradeException {
+			try {
+				IsoGeoLocation location = IsoGeoLocation.valueOf(trade.getOriginatingCountry());
+				return location;
+			} catch (IllegalArgumentException e) {
+				throw new PublishTradeException(e);
+			}
+		}
+
+		Double validateLatitude(Trade trade) throws PublishTradeException {
+			return getIsoGeoLocation(trade).getLatitude();
 		}
 
 		public String getUserId() {

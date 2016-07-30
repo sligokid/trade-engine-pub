@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.magoo.currencyfair.pub.NoTradeAvailableException;
+import com.magoo.currencyfair.pub.PublishTradeException;
 import com.magoo.currencyfair.pub.model.CurrencyPair;
 import com.magoo.currencyfair.pub.model.MarketVolumeIndicator;
 import com.magoo.currencyfair.pub.model.Trade;
@@ -56,9 +58,9 @@ class TradeServiceImpl implements TradeService {
 				marketVolumeCalculator.decrementMarketVolume(MarketVolumeIndicator.LIVE);
 			}
 			LOG.info("Streaming tradeDao: {}", tradeDao);
-		} catch (IllegalStateException e) {
+		} catch (NoTradeAvailableException e) {
 			// LOG.warn(e.toString());
-		} catch (IllegalArgumentException e) {
+		} catch (PublishTradeException e) {
 			marketVolumeCalculator.initOrUpdateMarketVolume(MarketVolumeIndicator.INVALID);
 			LOG.warn(e.toString());
 		}
