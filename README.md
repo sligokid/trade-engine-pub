@@ -58,6 +58,7 @@ http://ec2-52-16-13-114.eu-west-1.compute.amazonaws.com:8101/pub/tradestream
 
 ``` bash
    $ git clone https://github.com/sligokid/trade-engine-pub.git
+   $ cd trade-engine-pub
    $ mvn clean package
    $ mvn spring-boot:run
 ```
